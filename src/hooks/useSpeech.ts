@@ -1,38 +1,31 @@
-import { useCallback, useState } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 
 export function useSpeech() {
+  const [isSupported, setIsSupported] = useState(false)
   const [isSpeaking, setIsSpeaking] = useState(false)
 
-  const speak = useCallback((text: string, lang = 'en-US') => {
-    if (!('speechSynthesis' in window)) return
+  useEffect(() => {
+    if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+      setIsSupported(true)
+    }
+  },[])
+
+  const speak = useCallback((text: string) => {
+    if (!isSupported) return
 
     window.speechSynthesis.cancel()
-    const utterance = new SpeechSynthesisUtterance(text)
-    utterance.lang = lang
-    utterance.rate = 0.85
-    utterance.pitch = 1
-    utterance.volume = 1
 
-    // Prefer an English voice if available
-    const voices = window.speechSynthesis.getVoices()
-    const preferred = voices.find(
-      (v) => v.lang.startsWith('en') && v.localService
-    ) || voices.find((v) => v.lang.startsWith('en'))
-    if (preferred) utterance.voice = preferred
+    const utterance = new SpeechSynthesisUtterance(text)
+    utterance.lang = 'en-US'
+    utterance.rate = 0.9 // Чуть медленнее для четкости
+    utterance.pitch = 1
 
     utterance.onstart = () => setIsSpeaking(true)
     utterance.onend = () => setIsSpeaking(false)
     utterance.onerror = () => setIsSpeaking(false)
 
     window.speechSynthesis.speak(utterance)
-  }, [])
+  }, [isSupported])
 
-  const stop = useCallback(() => {
-    window.speechSynthesis.cancel()
-    setIsSpeaking(false)
-  }, [])
-
-  const isSupported = 'speechSynthesis' in window
-
-  return { speak, stop, isSpeaking, isSupported }
+  return { speak, isSpeaking, isSupported }
 }

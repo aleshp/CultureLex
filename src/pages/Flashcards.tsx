@@ -26,7 +26,7 @@ export default function Flashcards() {
 
   if (finished) {
     return (
-      <div className="h-[100dvh] pt-20 flex items-center justify-center px-6 relative">
+      <div className="h-[100dvh] pt-20 pb-28 md:pb-8 flex items-center justify-center px-6 relative">
         <div className="bg-shape-emerald" />
         <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="content-card max-w-sm w-full text-center">
           <div className="w-16 h-16 bg-emerald-500/20 border border-emerald-500/50 rounded-full mx-auto mb-4 flex items-center justify-center text-emerald-400 text-2xl font-bold shadow-[0_0_30px_rgba(16,185,129,0.3)]">✓</div>
@@ -42,7 +42,7 @@ export default function Flashcards() {
   }
 
   return (
-    <div className="h-[100dvh] flex flex-col pt-[100px] pb-8 px-4 sm:px-6 overflow-hidden relative">
+    <div className="h-[100dvh] flex flex-col pt-[100px] pb-32 md:pb-8 px-4 sm:px-6 overflow-hidden relative">
       <div className="bg-shape-emerald" />
       <div className="max-w-md w-full mx-auto flex flex-col h-full relative z-10">
         

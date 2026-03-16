@@ -31,7 +31,7 @@ export default function Achievements() {
   const progressPct = Math.round((earned / total) * 100) || 0
 
   return (
-    <div className="min-h-[100dvh] pt-28 pb-12 px-6 relative">
+    <div className="min-h-[100dvh] pt-28 pb-32 md:pb-12 px-6 relative">
       {/* Если в App.tsx уже есть сфера, эту можно убрать, но для полноты картины оставим */}
       <div className="bg-shape-emerald" /> 
       

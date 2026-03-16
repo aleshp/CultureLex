@@ -7,7 +7,7 @@ export default function Categories() {
   const stats = useStore((s) => s.stats)
 
   return (
-    <div className="min-h-[100dvh] pt-28 pb-12 px-6 relative">
+    <div className="min-h-[100dvh] pt-28 pb-32 md:pb-12 px-6 relative">
       <div className="max-w-6xl mx-auto">
         <header className="mb-10">
           <h1 className="text-3xl font-bold text-white">Library Modules</h1>

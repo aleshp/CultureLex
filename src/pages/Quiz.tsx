@@ -59,7 +59,7 @@ export default function Quiz() {
 
   if (finished) {
     return (
-      <div className="h-[100dvh] pt-20 flex items-center justify-center px-6 relative">
+      <div className="h-[100dvh] pt-[72px] pb-28 md:pb-8 flex items-center justify-center px-6 relative overflow-hidden">
         <div className="bg-shape-emerald" />
         <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="content-card max-w-sm w-full text-center">
           <h3 className="text-sm font-semibold text-gray-400 mb-2">Quiz Results</h3>
@@ -75,7 +75,7 @@ export default function Quiz() {
   }
 
   return (
-    <div className="h-[100dvh] flex flex-col pt-[100px] pb-8 px-4 sm:px-6 overflow-hidden relative">
+    <div className="h-[100dvh] flex flex-col pt-[100px] pb-32 md:pb-8 px-4 sm:px-6 overflow-hidden relative">
       <div className="bg-shape-emerald" />
       <div className="max-w-xl mx-auto w-full flex flex-col h-full relative z-10">
         

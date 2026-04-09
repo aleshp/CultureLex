@@ -22,9 +22,11 @@ interface Store {
   stats: Stats
   session: Session | null
   classGroup: string | null
+  role: 'student' | 'teacher' | null
   
   setSession: (session: Session | null) => void
   setClassGroup: (classGroup: string | null) => void
+  setRole: (role: 'student' | 'teacher' | null) => void
   setStats: (stats: Stats) => void
   
   markWordLearned: (wordId: string) => void

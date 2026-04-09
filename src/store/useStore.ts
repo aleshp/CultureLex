@@ -1,5 +1,7 @@
+// src/store/useStore.ts
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
+import { Session } from '@supabase/supabase-js'
 import type { QuizResult } from '../types'
 
 interface Stats {
@@ -18,6 +20,13 @@ interface Stats {
 
 interface Store {
   stats: Stats
+  session: Session | null
+  classGroup: string | null
+  
+  setSession: (session: Session | null) => void
+  setClassGroup: (classGroup: string | null) => void
+  setStats: (stats: Stats) => void
+  
   markWordLearned: (wordId: string) => void
   markWordMastered: (wordId: string) => void
   recordQuizResult: (result: QuizResult) => void
@@ -31,9 +40,9 @@ const initialState: Stats = {
   level: 1,
   streak: 0,
   lastActive: null,
-  learnedWordIds:[],
+  learnedWordIds: [],
   masteredWordIds: [],
-  quizHistory: [],
+  quizHistory:[],
   earnedBadgeIds:[],
   hearts: 5,
   totalAnswered: 0,
@@ -44,6 +53,12 @@ export const useStore = create<Store>()(
   persist(
     (set) => ({
       stats: initialState,
+      session: null,
+      classGroup: null,
+
+      setSession: (session) => set({ session }),
+      setClassGroup: (classGroup) => set({ classGroup }),
+      setStats: (stats) => set({ stats }),
 
       markWordLearned: (wordId) => set((state) => {
         if (state.stats.learnedWordIds.includes(wordId)) return state
@@ -53,7 +68,7 @@ export const useStore = create<Store>()(
             ...state.stats,
             xp: newXp,
             level: Math.floor(newXp / 100) + 1,
-            learnedWordIds: [...state.stats.learnedWordIds, wordId],
+            learnedWordIds:[...state.stats.learnedWordIds, wordId],
           }
         }
       }),
@@ -75,10 +90,10 @@ export const useStore = create<Store>()(
             ...state.stats,
             xp: newXp,
             level: Math.floor(newXp / 100) + 1,
-            quizHistory: [...state.stats.quizHistory, result],
+            quizHistory:[...state.stats.quizHistory, result],
             totalAnswered: state.stats.totalAnswered + result.total,
             totalCorrect: state.stats.totalCorrect + result.score,
-            hearts: 5 // Восстанавливаем жизни после квиза
+            hearts: 5
           }
         }
       }),
@@ -88,7 +103,7 @@ export const useStore = create<Store>()(
         return {
           stats: {
             ...state.stats,
-            earnedBadgeIds: [...state.stats.earnedBadgeIds, badgeId]
+            earnedBadgeIds:[...state.stats.earnedBadgeIds, badgeId]
           }
         }
       }),

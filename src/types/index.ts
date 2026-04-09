@@ -62,7 +62,8 @@ export interface QuizResult {
 export interface UserProfile {
   id: string
   email: string
-  class_group: string
-  stats: UserStats
+  class_group: string | null
+  role: 'student' | 'teacher'
+  stats: UserStats 
   updated_at: string
 }

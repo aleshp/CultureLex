@@ -21,7 +21,7 @@ export default function Auth() {
   const [error, setError] = useState<string | null>(null)
   
   const navigate = useNavigate()
-  const { setClassGroup, setRole, stats } = useStore()
+  const { setClassGroup, setRole, setSession, stats } = useStore()
 
 const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault()

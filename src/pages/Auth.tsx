@@ -23,18 +23,20 @@ export default function Auth() {
   const navigate = useNavigate()
   const { setClassGroup, setRole, stats } = useStore()
 
-  const handleAuth = async (e: React.FormEvent) => {
+const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
     setError(null)
 
-    // Для учителя класс null, для ученика — склеиваем
     const combinedClass = accountType === 'student' ? `${classNumber}${classLetter}` : null
 
     try {
       if (isLogin) {
-        const { error } = await supabase.auth.signInWithPassword({ email, password })
+        const { data, error } = await supabase.auth.signInWithPassword({ email, password })
         if (error) throw error
+        
+        // ВАЖНО: Моментально обновляем Navbar
+        setSession(data.session) 
         navigate('/')
       } else {
         const { data, error } = await supabase.auth.signUp({ 
@@ -43,7 +45,7 @@ export default function Auth() {
           options: {
             data: { 
               class_group: combinedClass,
-              role: accountType // Сохраняем роль
+              role: accountType 
             }
           }
         })
@@ -55,10 +57,13 @@ export default function Auth() {
               id: data.user.id, 
               email: data.user.email, 
               class_group: combinedClass,
-              role: accountType, // Записываем роль в БД
+              role: accountType,
               stats: stats 
             }
           ])
+          
+          // ВАЖНО: Моментально обновляем Navbar после регистрации
+          setSession(data.session)
           setClassGroup(combinedClass)
           setRole(accountType)
         }

@@ -57,9 +57,11 @@ export const useStore = create<Store>()(
       stats: initialState,
       session: null,
       classGroup: null,
+      role: null,
 
       setSession: (session) => set({ session }),
       setClassGroup: (classGroup) => set({ classGroup }),
+      setRole: (role) => set({ role }),
       setStats: (stats) => set({ stats }),
 
       markWordLearned: (wordId) => set((state) => {

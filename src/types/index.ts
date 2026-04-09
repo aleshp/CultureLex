@@ -58,3 +58,11 @@ export interface QuizResult {
   date: string
   xpEarned: number
 }
+
+export interface UserProfile {
+  id: string
+  email: string
+  class_group: string
+  stats: UserStats
+  updated_at: string
+}

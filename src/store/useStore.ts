@@ -72,7 +72,7 @@ export const useStore = create<Store>()(
             ...state.stats,
             xp: newXp,
             level: Math.floor(newXp / 100) + 1,
-            learnedWordIds:[...state.stats.learnedWordIds, wordId],
+            learnedWordIds: [...state.stats.learnedWordIds, wordId],
           }
         }
       }),
@@ -118,6 +118,15 @@ export const useStore = create<Store>()(
 
       resetProgress: () => set({ stats: initialState }),
     }),
-    { name: 'culturelex-storage' }
+    { 
+      name: 'culturelex-storage',
+      // ВАЖНО: Исключаем session из сохранения!
+      // Сохраняем только stats, classGroup и role
+      partialize: (state) => ({ 
+        stats: state.stats, 
+        classGroup: state.classGroup, 
+        role: state.role 
+      }),
+    }
   )
 )

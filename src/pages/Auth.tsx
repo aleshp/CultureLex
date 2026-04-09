@@ -1,19 +1,23 @@
-// src/pages/Auth.tsx
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { supabase } from '../lib/supabase'
 import { useStore } from '../store/useStore'
-import clsx from 'clsx'
 
-const CLASSES =['5А', '5Б', '6А', '6Б', '7А', '7Б', '7В', '7Г', '8А', '8Б', '9А', '9Б', '10А', '10Б', '11А', '11Б']
+// Варианты цифр классов и букв (включая казахские до "Е")
+const CLASS_NUMBERS =['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11']
+const CLASS_LETTERS = ['А', 'Ә', 'Б', 'В', 'Г', 'Ғ', 'Д', 'Е']
 
 export default function Auth() {
   const [isLogin, setIsLogin] = useState(true)
   const [email, setEmail] = useState('')
-  const[password, setPassword] = useState('')
-  const [selectedClass, setSelectedClass] = useState('7Г')
-  const [loading, setLoading] = useState(false)
+  const [password, setPassword] = useState('')
+  
+  // Состояния для дропдаунов
+  const [classNumber, setClassNumber] = useState('7')
+  const [classLetter, setClassLetter] = useState('Г')
+  
+  const[loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   
   const navigate = useNavigate()
@@ -23,6 +27,9 @@ export default function Auth() {
     e.preventDefault()
     setLoading(true)
     setError(null)
+
+    // Объединяем цифру и букву (например: "7Г" или "5Ә")
+    const combinedClass = `${classNumber}${classLetter}`
 
     try {
       if (isLogin) {
@@ -35,7 +42,7 @@ export default function Auth() {
           email, 
           password,
           options: {
-            data: { class_group: selectedClass } // Сохраняем класс в мету
+            data: { class_group: combinedClass } // Сохраняем объединенный класс
           }
         })
         if (error) throw error
@@ -46,11 +53,11 @@ export default function Auth() {
             { 
               id: data.user.id, 
               email: data.user.email, 
-              class_group: selectedClass,
+              class_group: combinedClass,
               stats: stats // Отправляем текущую локальную статистику
             }
           ])
-          setClassGroup(selectedClass)
+          setClassGroup(combinedClass)
         }
         navigate('/')
       }
@@ -71,7 +78,9 @@ export default function Auth() {
         className="content-card max-w-md w-full relative z-10"
       >
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-white mb-2">{isLogin ? 'Welcome Back' : 'Join CultureLex'}</h1>
+          <h1 className="text-3xl font-bold text-white mb-2">
+            {isLogin ? 'Welcome Back' : 'Join CultureLex'}
+          </h1>
           <p className="text-gray-400 text-sm">
             {isLogin ? 'Log in to continue your progress' : 'Create an account to save your progress and compete'}
           </p>
@@ -107,21 +116,48 @@ export default function Auth() {
           {!isLogin && (
             <div>
               <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Your Class</label>
-              <div className="grid grid-cols-4 gap-2 max-h-32 overflow-y-auto pr-2 custom-scrollbar">
-                {CLASSES.map(cls => (
-                  <button
-                    key={cls} type="button"
-                    onClick={() => setSelectedClass(cls)}
-                    className={clsx(
-                      "py-2 rounded-lg text-sm font-medium border transition-all duration-300",
-                      selectedClass === cls 
-                        ? "bg-indigo-500/20 border-indigo-500 text-indigo-400 shadow-[0_0_15px_rgba(99,102,241,0.3)]" 
-                        : "bg-white/5 border-white/10 text-gray-400 hover:bg-white/10"
-                    )}
+              
+              {/* Два дропдауна (Цифра и Буква) */}
+              <div className="grid grid-cols-2 gap-4">
+                
+                {/* Дропдаун Цифры */}
+                <div className="relative">
+                  <select
+                    value={classNumber}
+                    onChange={(e) => setClassNumber(e.target.value)}
+                    className="w-full bg-black/30 border border-white/10 rounded-xl px-4 py-3 text-white appearance-none focus:outline-none focus:border-indigo-500 transition-colors cursor-pointer"
                   >
-                    {cls}
-                  </button>
-                ))}
+                    {CLASS_NUMBERS.map(num => (
+                      <option key={num} value={num} className="bg-gray-900 text-white">
+                        {num} сынып
+                      </option>
+                    ))}
+                  </select>
+                  {/* Иконка стрелочки для селекта */}
+                  <div className="absolute inset-y-0 right-4 flex items-center pointer-events-none text-gray-400">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
+                  </div>
+                </div>
+
+                {/* Дропдаун Буквы */}
+                <div className="relative">
+                  <select
+                    value={classLetter}
+                    onChange={(e) => setClassLetter(e.target.value)}
+                    className="w-full bg-black/30 border border-white/10 rounded-xl px-4 py-3 text-white appearance-none focus:outline-none focus:border-indigo-500 transition-colors cursor-pointer"
+                  >
+                    {CLASS_LETTERS.map(letter => (
+                      <option key={letter} value={letter} className="bg-gray-900 text-white">
+                        «{letter}»
+                      </option>
+                    ))}
+                  </select>
+                  {/* Иконка стрелочки для селекта */}
+                  <div className="absolute inset-y-0 right-4 flex items-center pointer-events-none text-gray-400">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
+                  </div>
+                </div>
+
               </div>
             </div>
           )}
